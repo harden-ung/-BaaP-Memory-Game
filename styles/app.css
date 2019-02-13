@@ -1,0 +1,33 @@
+/* @import "~bootstrap/scss/bootstrap"; */
+div#card {
+    border-style: dotted;
+    border-color: gray;
+    border-width: 1px;
+}
+
+#title {
+    text-align: center;
+}
+
+#progress {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.red {
+    color: red;
+}
+
+.blue {
+    color: blue;
+}
+
+.green {
+    color: green;
+}
+
+.card-body {
+    text-align: center;
+    font-size: 30px;
+    padding: 4px 0px 4px 0px;
+}
