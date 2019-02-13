@@ -5,8 +5,8 @@ console.log("app starting...");
 (()=>{
     //declair constants 
     const CONST = {
-        BOARD_SIZE: 12,
-        CARDS_PER_ROW: 3,
+        BOARD_SIZE: 20,
+        CARDS_PER_ROW: 4,
         CARD_INVISIBLE: "oi-aperture",
         GAME_STATE: {
             NO_TURNED_CARD: 0,
@@ -37,8 +37,9 @@ console.log("app starting...");
             if (this.gameController.state === CONST.GAME_STATE.TWO_TURNED_CARDS) return;
             if (this.state === CONST.CARD_STATE.IN_GAME) {
                 this.gameController.turnCard(this.id);
-                console.log(this);
-                console.log("card " + this.id + " clicked");
+                //checking purposes if this work as intended
+                // console.log(this);
+                // console.log("card " + this.id + " clicked");
             }
         }
         turnVisible() {
@@ -86,21 +87,29 @@ console.log("app starting...");
         }
         setPlayTime(){
             if(this.state === CONST.GAME_STATE.GAME_OVER) return;
+            //use arrowFunction here so that this here is MemoryGame object. Otherwise, it will be HTML document.getElementById object
+            let m = 0;
             setInterval(() => {
-                document.getElementById("play-time").innerText = `Playtime: ${++this.timePlay} s`
+                let timeString = "";
+                if (this.timePlay === 60){
+                    m++;
+                    this.timePlay = 0;
+                }
+                if (m === 0 ){timeString = `Playtime: ${++this.timePlay} s`;} 
+                else {timeString = `Playtime: ${m} ' ${++this.timePlay} s`;}           
+                document.getElementById("play-time").innerText = timeString
             }, 1000);
         }
         setIconClassToCards() {
-            let i, icon, x, y;
-            for (i = 0; i < this.nbrOfCards / 2; i++) {
-                icon = Math.floor(Math.random() * ICONNAMES.length);
+            let x, y;
+            for (let i = 0; i < this.nbrOfCards / 2; i++) {
                 x = Math.floor(Math.random() * this.nbrOfCards);
                 y = Math.floor(Math.random() * this.nbrOfCards);
 
+                //set icon immediately after find next uninitialized icon class index otherwise there will be bugs that one element may not have iconClass
                 x = this.getNextUninitializedIconClassIndex(x);
-                y = this.getNextUninitializedIconClassIndex(y);
-
                 this.cards[x].setIcon(i);
+                y = this.getNextUninitializedIconClassIndex(y);  
                 this.cards[y].setIcon(i);
             }
         }
@@ -115,6 +124,7 @@ console.log("app starting...");
         setEventListeners() {
             for (let i = 0; i < this.nbrOfCards; i++) {
                 this.cards[i] = new MemoryCard(i, this);
+                //this.cards refer to array cards in MemoryGame
                 this.cards[i].element.addEventListener("click", this.cards[i].onClickhandler);
             }
         }
