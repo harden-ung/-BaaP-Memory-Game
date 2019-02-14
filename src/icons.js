@@ -11,7 +11,6 @@ ICONNAMES = [
   'oi-command',
   'oi-envelope-closed',
   'oi-headphones',
-  'oi-heart',
   'oi-image',
   'oi-key',
   'oi-lock-locked',

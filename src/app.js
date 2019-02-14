@@ -5,8 +5,8 @@ console.log("app starting...");
 (()=>{
     //declair constants 
     const CONST = {
-        BOARD_SIZE: 20,
-        CARDS_PER_ROW: 4,
+        BOARD_SIZE: 2,
+        CARDS_PER_ROW: 2,
         CARD_INVISIBLE: "oi-aperture",
         GAME_STATE: {
             NO_TURNED_CARD: 0,
@@ -18,7 +18,7 @@ console.log("app starting...");
             IN_GAME: 0,
             OPENED: 1
         },
-        TURN_INVISIBLE_DELAY: 700
+        TURN_INVISIBLE_DELAY: 150
     }
 
     //class MemoryCard to create card objects
@@ -79,6 +79,7 @@ console.log("app starting...");
             this.state = CONST.GAME_STATE.NO_TURNED_CARD;
             this.moveCount = 0;
             this.timePlay = -1;
+            this.foundPairs = 0;
         }
         inittialize() {
             this.createDivs();
@@ -206,6 +207,8 @@ console.log("app starting...");
                         this.secondCard.element.classList.add("card-done");
                         this.firstCard.element.removeEventListener("click", this.firstCard.onClickhandler);
                         this.secondCard.element.removeEventListener("click", this.secondCard.onClickhandler);
+                        this.foundPairs +=1;
+                        document.getElementById("progress-bar").style.width = (this.foundPairs * 100 /(this.nbrOfCards/2) + "%");
                         this.state = CONST.GAME_STATE.NO_TURNED_CARD;
                     }
                     break;
