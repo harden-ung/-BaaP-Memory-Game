@@ -3,15 +3,14 @@
 console.log("app starting...");
 //IIFE so that one cannot access variables from Chrome Inspect
 (()=>{
-    //declair constants 
+    // declair constants 
     const CONST = {
-        BOARD_SIZE: 2,
+        BOARD_SIZE: 4,
         CARDS_PER_ROW: 2,
         CARD_INVISIBLE: "oi-aperture",
         GAME_STATE: {
             NO_TURNED_CARD: 0,
             ONE_TURNED_CARD: 1,
-            TWO_TURNED_CARDS: 2,
             GAME_OVER: 3
         },
         CARD_STATE: {
@@ -20,7 +19,6 @@ console.log("app starting...");
         },
         TURN_INVISIBLE_DELAY: 150
     }
-
     //class MemoryCard to create card objects
     class MemoryCard {
         constructor(id, gameController) {
@@ -43,8 +41,8 @@ console.log("app starting...");
             }
         }
         turnVisible() {
-            this.span.classList.remove(CONST.CARD_INVISIBLE);
-            this.span.classList.add(this.iconClass);
+            this.span.classList.remove(CONST.CARD_INVISIBLE,"text-danger");
+            this.span.classList.add(this.iconClass,"text-primary");
             this.element.classList.add("animated", "flipInX");
             this.state = CONST.CARD_STATE.OPENED;
         }
@@ -55,7 +53,7 @@ console.log("app starting...");
                 this.element.addEventListener("animationend", () => {
                     this.span.classList.remove(this.iconClass);
                     this.element.classList.remove("animated", "flipOutX")
-                    this.span.classList.add(CONST.CARD_INVISIBLE);
+                    this.span.classList.add(CONST.CARD_INVISIBLE,"text-danger");
                     resolve();
                 }, { once: true });
             });
@@ -68,7 +66,6 @@ console.log("app starting...");
             this.iconClass = ICONNAMES[x];
         }
     }
-
     class MemoryGame {
         constructor(size, cardsPerRow) {
             this.nbrOfCards = size;
@@ -78,28 +75,59 @@ console.log("app starting...");
             this.secondCard = undefined;
             this.state = CONST.GAME_STATE.NO_TURNED_CARD;
             this.moveCount = 0;
-            this.timePlay = -1;
+            this.secondPlay = -1;
+            this.timePlay = "";
             this.foundPairs = 0;
+            this.playTimeInterval;
+            //this.playDate;
         }
         inittialize() {
             this.createDivs();
             this.setEventListeners();
             this.setIconClassToCards();
         }
+        gameEnd(){
+            console.log("Game End");
+            clearInterval(this.playTimeInterval);      
+            
+            // set play score
+            document.getElementById("yourScore").innerText = `You finish the game with ${this.moveCount} moves in ${this.timePlay}.`;
+
+            //display modal
+            let modalElement = document.getElementById("highScoreModal");
+            modalElement.style.display = "block";    
+            //add listener for buttons
+            let closeBtn = document.getElementById("closeModal");
+            let replayBtn = document.getElementById("replay");
+            closeBtn.addEventListener("click",()=>{
+                modalElement.style.display = "none";
+            })
+            replayBtn.addEventListener("click",()=>{
+                modalElement.style.display = "none";
+                location.reload();
+            })
+        }
         setPlayTime(){
             if(this.state === CONST.GAME_STATE.GAME_OVER) return;
             //use arrowFunction here so that this here is MemoryGame object. Otherwise, it will be HTML document.getElementById object
             let m = 0;
-            setInterval(() => {
+            this.playTimeInterval = setInterval(() => {
                 let timeString = "";
-                if (this.timePlay === 60){
+                if (this.secondPlay === 60){
                     m++;
-                    this.timePlay = 0;
+                    this.secondPlay = 0;
                 }
-                if (m === 0 ){timeString = `Playtime: ${++this.timePlay} s`;} 
-                else {timeString = `Playtime: ${m} ' ${++this.timePlay} s`;}           
+                if (m === 0 ){
+                    timeString = `Playtime: ${++this.secondPlay}s`;
+                    this.timePlay = `${++this.secondPlay}s`;
+                } 
+                else {
+                    timeString = `Playtime: ${m}' ${++this.secondPlay}s`;
+                    this.timePlay = `${m}'${++this.secondPlay}s`;
+                }    
+                
                 document.getElementById("play-time").innerText = timeString
-            }, 1000);
+            }, 100);
         }
         setIconClassToCards() {
             let x, y;
@@ -149,7 +177,7 @@ console.log("app starting...");
         createIcon(id) {
             let iconSpan = document.createElement("span");
             iconSpan.id = "span-" + id;
-            iconSpan.classList.add("oi", "text-primary");
+            iconSpan.classList.add("oi", "text-danger");
             iconSpan.classList.add(CONST.CARD_INVISIBLE);
             return iconSpan;
         }
@@ -172,8 +200,8 @@ console.log("app starting...");
             }
         }
         turnCard(id) {
-            if (this.timePlay === -1){
-                this.timePlay = 0;
+            if (this.secondPlay === -1){
+                this.secondPlay = 0;
                 this.setPlayTime();
             }
             switch (this.state) {
@@ -209,18 +237,20 @@ console.log("app starting...");
                         this.secondCard.element.removeEventListener("click", this.secondCard.onClickhandler);
                         this.foundPairs +=1;
                         document.getElementById("progress-bar").style.width = (this.foundPairs * 100 /(this.nbrOfCards/2) + "%");
-                        this.state = CONST.GAME_STATE.NO_TURNED_CARD;
+                        if (this.foundPairs === this.nbrOfCards/2){
+                            this.state = CONST.GAME_STATE.GAME_OVER;
+                            this.gameEnd();
+                        }
+                        else {
+                            this.state = CONST.GAME_STATE.NO_TURNED_CARD;
+                        }
                     }
                     break;
-                case CONST.GAME_STATE.TWO_TURNED_CARDS:
-                    break
                 default:
                     break;
             }
         }
     }
-
     let memoryGame = new MemoryGame(CONST.BOARD_SIZE, CONST.CARDS_PER_ROW);
-
     memoryGame.inittialize();
 })()
