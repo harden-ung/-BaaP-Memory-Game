@@ -1,6 +1,5 @@
 // app.js
 'use strict';
-console.log("app starting...");
 //IIFE so that one cannot access variables from Chrome Inspect
 (()=>{
     // declair constants 
@@ -35,9 +34,6 @@ console.log("app starting...");
             if (this.gameController.state === CONST.GAME_STATE.TWO_TURNED_CARDS) return;
             if (this.state === CONST.CARD_STATE.IN_GAME) {
                 this.gameController.turnCard(this.id);
-                //checking purposes if this work as intended
-                // console.log(this);
-                // console.log("card " + this.id + " clicked");
             }
         }
         turnVisible() {
@@ -92,12 +88,10 @@ console.log("app starting...");
             }
         }
         gameEnd(){
-            console.log("Game End");
             clearInterval(this.playTimeInterval);      
-            // show play score
             document.getElementById("yourScore").innerText = `You finish the game with ${this.moveCount} moves in ${this.toMinuteAndSecond(this.secondPlay)}.`;
             this.setHighscore();
-            this.showHighScore();
+            this.getHighScore();
             this.showModal();
         }
         setHighscore(){
@@ -118,8 +112,8 @@ console.log("app starting...");
             }).slice(0, 3);
             localStorage.setItem("highscore", JSON.stringify(newHighscoreArray));
         }
-        showHighScore(){
-            //show highscore         
+        getHighScore(){
+            //show 3 highscores         
             document.getElementById("highScore1").innerHTML = `Batman \n ${JSON.parse(localStorage.getItem("highscore"))[0].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[0].time)}`;
             document.getElementById("highScore2").innerHTML = `Joker ${JSON.parse(localStorage.getItem("highscore"))[1].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[1].time)}`;
             document.getElementById("highScore3").innerHTML = `Halley Quinn ${JSON.parse(localStorage.getItem("highscore"))[2].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[2].time)}`;
@@ -262,6 +256,7 @@ console.log("app starting...");
                         this.firstCard.element.removeEventListener("click", this.firstCard.onClickhandler);
                         this.secondCard.element.removeEventListener("click", this.secondCard.onClickhandler);
                         this.foundPairs +=1;
+                        //update progress bar
                         document.getElementById("progress-bar").style.width = (this.foundPairs * 100 /(this.nbrOfCards/2) + "%");
                         if (this.foundPairs === this.nbrOfCards/2){
                             this.state = CONST.GAME_STATE.GAME_OVER;
