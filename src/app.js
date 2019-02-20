@@ -1,4 +1,3 @@
-// app.js
 'use strict';
 //IIFE so that one cannot access variables from Chrome Inspect
 (()=>{
@@ -114,9 +113,9 @@
         }
         getHighScore(){
             //show 3 highscores         
-            document.getElementById("highScore1").innerHTML = `Batman \n ${JSON.parse(localStorage.getItem("highscore"))[0].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[0].time)}`;
-            document.getElementById("highScore2").innerHTML = `Joker ${JSON.parse(localStorage.getItem("highscore"))[1].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[1].time)}`;
-            document.getElementById("highScore3").innerHTML = `Halley Quinn ${JSON.parse(localStorage.getItem("highscore"))[2].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[2].time)}`;
+            document.getElementById("highScore1").innerHTML = `#1 ${JSON.parse(localStorage.getItem("highscore"))[0].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[0].time)}`;
+            document.getElementById("highScore2").innerHTML = `#2 ${JSON.parse(localStorage.getItem("highscore"))[1].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[1].time)}`;
+            document.getElementById("highScore3").innerHTML = `#3 ${JSON.parse(localStorage.getItem("highscore"))[2].turn} moves ${this.toMinuteAndSecond(JSON.parse(localStorage.getItem("highscore"))[2].time)}`;
         }
         showModal(){
             //display modal
